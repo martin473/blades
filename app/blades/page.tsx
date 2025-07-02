@@ -1,115 +1,94 @@
 'use client';
-import React, { useState } from "react";
-import * as motion from "motion/react-client"
+import React, { useState, createContext, useContext } from "react";
+import * as motion from "motion/react-client";
+import FlexBlade from "../blade/BladeV3";
+import { renderToString } from "react-dom/server";
 
-//Blades is a function with no input
-//CONSTS
-//index, setindex being set by useState(0)
-//blades are a list of dicts
-//blade click handler takes clicked index and sets it to the active index
-//sets isLast and isFirst to end and beginning of index
+//Blades "flex h-screen w-full bg-black overflow-hidden"
+// >> MyBlades/BladeDomContent/ActiveIndex/MotionDiv "w-12 h full" 
+// >> FlexBlade "absolute" 
 
-//Xbox Live is first, System is last
-//!!!ERROR > First and last anchor everything left or right, should instead be the ONLY thing
-//anchored when selected
-//!!!ERROR > Allignment is off when a middle item is selected
+//create active index var as a use context function
+//create state handler
+//wrap in default context component/value
+//set onclick to update context with state handler
+//onclick set index and set blade position, should update all blades
+export var ActiveIndex = createContext(4) //set to last index
 
-//RETURN
-//Header, xbox360 > Gamer
-//Footer, nav controls, time
-//Content for each blade
-//First blade
-//Last blade
-//Middle blade
+
+
 const Blades = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(4); //use state of last card in blades (blades is 5 long so default state is 4)
+//  const ActiveIndex = useContext(activeIndex); //React automatically re-renders components that read some context if it changes. v19.1. To determine the context value, React searches the component tree and finds the closest context provider above for that particular context.
+
 
   // Define the blades
   const blades = [
-    { name: "Xbox Live", color: "bg-green-600", icon: "🌐" },
-    { name: "Games", color: "bg-orange-500", icon: "🎮" },
-    { name: "Media", color: "bg-blue-600", icon: "🎬" },
-    { name: "Marketplace", color: "bg-yellow-500", icon: "🛒" },
-    { name: "System", color: "bg-gray-600", icon: "⚙️" },
+    { name: "contact", color: "bg-green-600", icon: "🌐", content: ActiveIndex },
+    { name: "writing", color: "bg-orange-500", icon: "🎮", content: ActiveIndex },
+    { name: "art", color: "bg-blue-600", icon: "🎬", content: ActiveIndex },
+    { name: "code", color: "bg-yellow-500", icon: "🛒", content: ActiveIndex },
+    { name: "hello", color: "bg-gray-600", icon: "⚙️", content: ActiveIndex },
   ];
 
+
+  const bladeDir = ({curIndex, activeIndex}) => {
+        if (curIndex <= activeIndex)
+          return "left"
+        if (curIndex > activeIndex)
+          return "right"
+    }
   // Handle blade selection
   const handleBladeClick = (index) => {
-    setActiveIndex(index);
+    setActiveIndex(index);    
   };
+  const myBlades = bladeDOMContent(blades, handleBladeClick, bladeDir, activeIndex);
 
   return (
-    <div className="relative flex h-screen w-full bg-black overflow-hidden">
-      {/* Main Content Area */}
+    <div className="flex h-screen w-full bg-black overflow-hidden">
         {/* Content for active blade */}
-        <div className="absolute inset-0 flex items-center justify-center z-0">
+        <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-white text-4xl">{blades[activeIndex].name}</h1>
             {/* Content items for active blade goes here */}
+            {blades[activeIndex].content}
           </div>
+          
+        {/* Blades */}
         </div>
-        {/* All blades behavior */}
-        {(
-          <>
-            {/* Items to the left of active and active */}
-              {/* list of left blades */}
-              {blades.map((blade, idx) => {
-                return ( //blade
-                
-                  <motion.div
-                    onClick={ () => handleBladeClick(idx) }
-                    key={blade.name} 
-                    
-                    className={`w-12 h-full static content-center justify-self-start z-1
-                      transition-all duration-500 ease-in-out cursor-pointer `} 
-                    style={{
-                      marginLeft: (idx == (activeIndex + 1)) ? "auto" : 0,
-                      borderRight: (idx <= activeIndex) ? "1px solid" : "",
-                      borderLeft: (idx > activeIndex) ? "1px solid" : "",
-                    }}
-                    transition={{
-                      type: "spring",
-                      visualDuration: 1,
-                      bounce: 1,
-                    }}
-                  >
-                  <BladeContent blade={blade} isActive={idx=== activeIndex} position="left" />
-                  </motion.div>
-                
-                );
-              })}
-          </>
-        )}
+          {myBlades}
         </div>
   );
 };
 
-// Extracted blade content component for reuse
-const BladeContent = ({ blade, isActive, position }) => {
-
-  return (
-    <>
-      {/* Vertical Text Container */}
-      <div className="flex flex-col items-center">
-        <div className="-rotate-90 whitespace-nowrap">
-          <span className="text-white text-l font-bold uppercase">{blade.name}</span>
-        </div>
-      </div>
-    </>
-  );
+const bladeDOMContent = (blades, clickHandler, dirHandler, activeIndex) => {
+  return (blades.map((blade, idx) => 
+    {
+      var dir = "left";
+      console.log(activeIndex)
+      return ( //blade
+          <motion.div
+            className={`w-[7vh] h-full cursor-pointer`} //w-7vh is a responsive width that spaces the blades correctly in response to the window height as well as the dynamic blade size
+            key={blade.name}
+            style={{
+              marginLeft: (idx == (Number(activeIndex) + 1)) ? "auto" : 0,
+            }}
+            //onClick={ () => {clickHandler(idx); dir = dirHandler(idx, activeIndex)} } //old click handler
+            onClick ={() => {
+              clickHandler(idx);
+              (idx <= Number(activeIndex)) ? dir = 'left' : dir = 'right'}}
+            layout //this instructs framer motion to animate between two layouts
+            transition={{
+              type: "tween",
+              visualDuration: 0.5,
+            }}
+          >
+          <ActiveIndex value={activeIndex}>
+            <FlexBlade name={blade.name} index={idx} ></FlexBlade>
+          </ActiveIndex>
+          </motion.div>
+      );
+    }
+  ));
 };
-
-// Extracted blade content component for reuse
-const Blade = ({ index, blade }) => {
-
-  return (
-    <div onClick={() => handleBladeClick(index)}
-      key={blade.name} 
-      className={`border-l w-12 h-full float-right static content-center justify-self-end z-1
-        transition-all duration-500 ease-in-out cursor-pointer`} >
-      <BladeContent blade={blade} isActive={false} position="right"/>
-    </div>
-  );
-};
-
 export default Blades;
