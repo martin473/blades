@@ -1,103 +1,90 @@
-import Image from "next/image";
+'use client';
+import React, { useState, createContext, useContext } from "react";
+import * as motion from "motion/react-client";
+import FlexBlade from "./ui/blade/Blade";
+import Card from "./ui/card/Card";
+import { renderToString } from "react-dom/server";
 
-export default function Home() {
+//Blades "flex h-screen w-full bg-black overflow-hidden"
+// >> MyBlades/BladeDomContent/ActiveIndex/MotionDiv "w-12 h full" 
+// >> FlexBlade "absolute" 
+
+//create active index var as a use context function
+//create state handler
+//wrap in default context component/value
+//set onclick to update context with state handler
+//onclick set index and set blade position, should update all blades
+export var ActiveIndex = createContext(4) //set to last index
+
+
+
+const Blades = () => {
+  const [activeIndex, setActiveIndex] = useState(4); //use state of last card in blades (blades is 5 long so default state is 4)
+//  const ActiveIndex = useContext(activeIndex); //React automatically re-renders components that read some context if it changes. v19.1. To determine the context value, React searches the component tree and finds the closest context provider above for that particular context.
+
+
+  // Define the blades
+  const blades = [
+    { name: "contact", color: "bg-center bg-cover bg-[url(https://images.pexels.com/photos/2387532/pexels-photo-2387532.jpeg)]", icon: "🌐", content: <Card /> },
+    { name: "writing", color: "bg-center bg-cover bg-[url(https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg)]", icon: "🎮", content: <Card title={"Sawyer\'s Sweet Thoughts"}/> },
+    { name: "art", color: "bg-center bg-cover bg-[url(https://images.pexels.com/photos/4754883/pexels-photo-4754883.jpeg)]", icon: "🎬", content: <Card /> },
+    { name: "code", color: "bg-center bg-cover bg-[url(https://images.pexels.com/photos/5109305/pexels-photo-5109305.jpeg)]", icon: "🛒", content: <Card /> },
+    { name: "hello", color: "bg-center bg-cover bg-[url(https://images.pexels.com/photos/29008331/pexels-photo-29008331.jpeg)]", icon: "⚙️", content: <Card title={"Title Text"}/>},
+  ];
+
+
+  const bladeDir = ({curIndex, activeIndex}) => {
+        if (curIndex <= activeIndex)
+          return "left"
+        if (curIndex > activeIndex)
+          return "right"
+    }
+  // Handle blade selection
+  const handleBladeClick = (index) => {
+    setActiveIndex(index);    
+  };
+  const myBlades = bladeDOMContent(blades, handleBladeClick, bladeDir, activeIndex);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className={`flex h-screen w-full ${blades[activeIndex].color} overflow-hidden`}>
+        {/* Content for active blade */}
+        <div className="absolute inset-0 flex items-center justify-center">
+            {blades[activeIndex].content}        
+        {/* Blades */}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          {myBlades}
+        </div>
   );
-}
+};
+
+const bladeDOMContent = (blades, clickHandler, dirHandler, activeIndex) => {
+  return (blades.map((blade, idx) => 
+    {
+      var dir = "left";
+      console.log(activeIndex)
+      return ( //blade
+          <motion.div
+            className={`w-[7vh] h-full cursor-pointer`} //w-7vh is a responsive width that spaces the blades correctly in response to the window height as well as the dynamic blade size
+            key={blade.name}
+            style={{
+              marginLeft: (idx == (Number(activeIndex) + 1)) ? "auto" : 0,
+            }}
+            //onClick={ () => {clickHandler(idx); dir = dirHandler(idx, activeIndex)} } //old click handler
+            onClick ={() => {
+              clickHandler(idx);
+              (idx <= Number(activeIndex)) ? dir = 'left' : dir = 'right'}}
+            layout //this instructs framer motion to animate between two layouts
+            transition={{
+              type: "tween",
+              visualDuration: 0.5,
+            }}
+          >
+          <ActiveIndex value={activeIndex}>
+            <FlexBlade name={blade.name} index={idx} ></FlexBlade>
+          </ActiveIndex>
+          </motion.div>
+      );
+    }
+  ));
+};
+export default Blades;

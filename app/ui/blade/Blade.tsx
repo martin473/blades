@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useContext } from "react";
 import * as motion from "motion/react-client";
-import { ActiveIndex } from "../blades/page";
+import { ActiveIndex } from "../../page";
 
 //function blade const activeIndex = useContext(ActiveIndex);
 interface bladeProps {
@@ -63,7 +63,7 @@ const FlexBlade: React.FC<bladeProps> = ({name, index, dir}) => {
                 >
                 <motion.path
                     variants={variants}
-                    className={`${bladeHCol}  pointer-events-auto`}
+                    className={`${bladeHCol} pointer-events-auto`}
                     fillRule="evenodd" clipRule="evenodd"
                     d={left}
                     //onClick={() => handleBladeAnim(Number(aIn))} //context passed from main page
@@ -99,19 +99,3 @@ const BladeContent = ({name, clickHandler}) => {
   };
 
 export default FlexBlade;
-//transform-origin-tl transform translate-[100%] display-inline-block padding-right-[0.25r] margin-right-[-999px] width-auto min-width-[1.2r] float-left height-[100%]
-//viewbox is weird. It lets you scale the svg rather than have it at a uniform size
-//its got some weird behaviors 
-// 1) the aspect ratio auto scales up if you are LARGER than the svg
-// 2) the aspect ratio crops instead if you are SMALLER than the svg
-// 3) it responds to the XY size of your browser window
-// so if you have a square, but you are viewing in a rectangle, viewbox will autoscale the x-val to match the width of your screen, and you will see a scaled up version of the svg with a scrollbar and the bottom cut off
-
-// https://webkit.org/blog/16794/the-css-shape-function/
-// https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/viewBox
-/*                  d={`M ${bladeW} 0 
-                        Q ${bladeW*(bladeSkew+1)} ${vBoxH/2} ${bladeW} ${vBoxH} 
-                        Q 0 ${vBoxH} 0 ${vBoxH} 
-                        Q ${bladeW*bladeSkew} ${vBoxH/2} 0 0 
-                        C ${bladeW} 0 0 0 ${bladeW} 0 `}
-*/

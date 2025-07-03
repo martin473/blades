@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/resizeMenu/page.js", "app/resizeMenu/page.js", "app/ui/card/blade/MeasureAndRender.js", "app/movingLine/page.jsx"],
   "exclude": ["node_modules"]
 }
