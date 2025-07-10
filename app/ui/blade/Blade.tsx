@@ -7,17 +7,13 @@ import { ActiveIndex } from "../../page";
 interface bladeProps {
   name: string;
   index: number;
-  dir: string;
 }
 
 
-const FlexBlade: React.FC<bladeProps> = ({name, index, dir}) => {
+const Blade: React.FC<bladeProps> = ({name, index}) => {
     const [bladeClicked, setBladeClicked] = useState("left");
-    
-    
-    //var dir = 'left';
     const aIn = useContext(ActiveIndex);
-    //const setDir = () =>{(index <= aIn) ? dir = "left" : dir = "right"; }
+
     useEffect(() => {
         handleBladeAnim(aIn); console.log("dir" + bladeClicked);
     }, [aIn]);
@@ -26,11 +22,8 @@ const FlexBlade: React.FC<bladeProps> = ({name, index, dir}) => {
         if (activeIndex < index)
             setBladeClicked("right");
         else
-            setBladeClicked("left");
-        console.log(bladeClicked, index)
-        
+            setBladeClicked("left");    
     }
-    //const dir = () => {(index <= aIn) ? setBladeClicked("left") : setBladeClicked("right") }
     //geometry
     const bladeW = 5; //adjusting this and the stroke size adjusts the stroke size due to autoscaling
     const bladeBoxX = 2; //bladebox is the aspect ratio for the blade and subsequent display boxes
@@ -39,9 +32,7 @@ const FlexBlade: React.FC<bladeProps> = ({name, index, dir}) => {
     const vBoxH = bladeW*14;
     //blade color style
     const bladeCol = "fill-gray-400";
-    const bladeSCol = "";
     const bladeHCol = "hover:fill-gray-600"; //detects hover in parent div and uses child notation to apply style to child svg
-    const bladeSSz = "";
     //const motionStyle ="transition ease-in-out duration-300 delay-100"
     //const motion = `hover:translate-x-00 ${motionStyle}`;
     const left = `M ${bladeW} 0 Q ${vBoxW*1.5} ${vBoxH/2} ${bladeW} ${vBoxH} Q 0 ${vBoxH} 0 ${vBoxH} Q ${vBoxW*1.5 - bladeW} ${vBoxH/2} 0 0`;
@@ -53,13 +44,14 @@ const FlexBlade: React.FC<bladeProps> = ({name, index, dir}) => {
     
 
     return(
-        <div className={`pointer-events-none 
-            h-[100vh] absolute aspect-${bladeBoxX}/${bladeBoxY}`}>
+       
+        <div className={`pointer-events-none justify-items-center
+            h-[100vh] absolute flex aspect-${bladeBoxX}/${bladeBoxY}`}>
             <motion.svg
                 animate={bladeClicked}
-                className={`${bladeCol}  ${bladeSCol} ${bladeSSz} `}
+                className={`${bladeCol}`}
                 viewBox={`0 0 ${vBoxW} ${vBoxH}`}
-                 
+
                 >
                 <motion.path
                     variants={variants}
@@ -76,6 +68,7 @@ const FlexBlade: React.FC<bladeProps> = ({name, index, dir}) => {
             </motion.svg>
             <BladeContent name={name} clickHandler={bladeClicked} />
         </div>
+    
     );
 };
 
@@ -90,7 +83,7 @@ const BladeContent = ({name, clickHandler}) => {
         <motion.div 
             animate={String(clickHandler)}
             variants={variants}
-            className={`flex absolute -translate-y-[52vh] translate-x-[3.8vh] w-full justify-center transform rotate-90 whitespace-nowrap`}>
+            className={`flex absolute translate-y-[47vh] translate-x-[3.8vh] w-full justify-center transform rotate-90 whitespace-nowrap`}>
             <span className="text-gray-300 text-shadow-lg/20 text-center text-[3.5vh]">
             {name}</span>
         </motion.div>
@@ -98,4 +91,4 @@ const BladeContent = ({name, clickHandler}) => {
     ); //top-[43vh] px-[10.5vh]
   };
 
-export default FlexBlade;
+export default Blade;
