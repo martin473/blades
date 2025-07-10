@@ -17,7 +17,7 @@ import ContactCard from "./ui/contact/ContactCard";
 export let ActiveIndex = createContext(4) //set to last index
 
 
-const Blades = () => {
+export default function Page () {
   const [activeIndex, setActiveIndex] = useState(5); //use state of last card in blades (blades is 5 long so default state is 4)
 //  const ActiveIndex = useContext(activeIndex); //React automatically re-renders components that read some context if it changes. v19.1. To determine the context value, React searches the component tree and finds the closest context provider above for that particular context.
 
@@ -85,4 +85,3 @@ const bladeDOMContent = (blades, clickHandler, dirHandler, activeIndex) => {
     }
   ));
 };
-export default Blades;
