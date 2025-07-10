@@ -14,7 +14,7 @@ import ContactCard from "./ui/contact/ContactCard";
 //set onclick to update context with state handler
 //onclick set index and set blade position, should update all blades
 
-export var ActiveIndex = createContext(4) //set to last index
+export let ActiveIndex = createContext(4) //set to last index
 
 
 const Blades = () => {
@@ -59,7 +59,7 @@ const Blades = () => {
 const bladeDOMContent = (blades, clickHandler, dirHandler, activeIndex) => {
   return (blades.map((blade, idx) => 
     {
-      var dir = "left";
+      let dir = "left";
       return ( //blade
           <motion.div
             className={`w-[7vh] h-full cursor-pointer`} //w-7vh is a responsive width that spaces the blades correctly in response to the window height as well as the dynamic blade size
