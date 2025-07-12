@@ -50,9 +50,7 @@ export default function Page () {
       {/* Content for active blade */}
       
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="h-screen w-[vh] flex items-center">
         {blades[activeIndex].content}        
-      </div>
       </div>
       {myBlades}
     </div>

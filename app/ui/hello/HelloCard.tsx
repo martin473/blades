@@ -14,8 +14,8 @@ Full stack specialist, connecting customer and business needs with a beautiful f
         //boxShadow, border, bgColor, transformOrigin 10% 60%
         <div className="grid h-screen place-items-center">
         <div className="flex flex-col">
-            <div className="text-2xl py-[0.5rem] text-shadow-xl text-white">{title}</div>
-            <div className="grid grid-cols-2 gap-4 h-[1/2vh] w-[90vh]">
+            <div className="text-[3vh] py-[0.5rem] text-shadow-xl text-white">{title}</div>
+            <div className="grid grid-cols-2 h-[1/2vh] w-[90vh]">
                 <Image src="/blogimages/me.png" 
                                 alt="Sawyer Sweet Headshot" 
                                 width={500} 
